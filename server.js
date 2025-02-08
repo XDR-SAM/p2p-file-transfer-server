@@ -1,25 +1,16 @@
 const express = require("express");
-const WebSocket = require("ws");
-const cors = require("cors");
+const { ExpressPeerServer } = require("peer");
 
 const app = express();
-app.use(cors());
-
-const PORT = process.env.PORT || 10000;
-const server = app.listen(PORT, () => console.log(`Signaling server running on port ${PORT}`));
-
-const wss = new WebSocket.Server({ server });
-
-wss.on("connection", (ws) => {
-    ws.on("message", (message) => {
-        wss.clients.forEach((client) => {
-            if (client !== ws && client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
-        });
-    });
+const server = require("http").createServer(app);
+const peerServer = ExpressPeerServer(server, {
+    debug: true,
 });
 
-app.get("/", (req, res) => {
-    res.send("WebSocket Signaling Server is Running!");
+app.use("/peerjs", peerServer);
+app.get("/", (req, res) => res.send("WebSocket Signaling Server is Running!"));
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Signaling server running on port ${PORT}`);
 });
