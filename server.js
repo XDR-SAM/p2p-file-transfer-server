@@ -1,10 +1,16 @@
 const express = require("express");
 const WebSocket = require("ws");
 const cors = require("cors");
+const path= require("path");
 
 const app = express();
 app.use(cors());
-app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () =>
   console.log(`Signaling server running on port ${PORT}`)
@@ -29,8 +35,4 @@ wss.on("connection", (ws) => {
   ws.on("close", () => {
     console.log("WebSocket connection closed");
   });
-});
-
-app.get("/", (req, res) => {
-  res.send("WebSocket Signaling Server is Running!");
 });
