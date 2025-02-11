@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: p2p-signaling-server
+    runtime: node
+    region: oregon  # Change if needed
+    plan: free  # Change to 'starter' or 'pro' if needed
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    healthCheckPath: "/"
+    autoDeploy: true
